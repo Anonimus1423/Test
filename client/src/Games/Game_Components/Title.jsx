@@ -12,7 +12,7 @@ const StyledTitle = styled.h2`
     left: 50%;
     transform: translateX(-50%);
     border-bottom: 3px solid ${({ theme }) => theme.colors.secondColor};
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 `
 
 export default function Title({ children }) {

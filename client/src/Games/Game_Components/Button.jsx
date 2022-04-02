@@ -9,8 +9,8 @@ export const MyButton = styled(ThisButton)`
     margin: 0;
 `
 
-export default function Button({ children }) {
+export default function Button({ children, onClick, style }) {
   return (
-    <MyButton>{children}</MyButton>
+    <MyButton onClick={onClick} style={style}>{children}</MyButton>
   )
 }
