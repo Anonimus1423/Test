@@ -8,7 +8,6 @@ export const getUser = token =>
     {
         try
         {
-            console.log("asd");
             const user = await axios.get('/api/account/get-user', { headers: { Authorization: "Bearer " + token } })
             dispatch(addUserAction(user.data.user))
             dispatch(addNotificationAction(user.data.notifications))
