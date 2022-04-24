@@ -13,6 +13,7 @@ export default async function getUserMiddleware(req, res, next)
     }
     catch(e)
     {
+        console.log(e);
         return res.status(401).send(e);
     }
     next();

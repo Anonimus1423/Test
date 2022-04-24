@@ -20,7 +20,7 @@ export function createCanvas (width, height, backgroundColor, element)
 export class SnakeGame
 {
 	// Snake Settings
-	constructor(snakeWidth, snakeHeight, snakeSpeed, snakeColor, tailColor, childDistance, childSpeed)
+	constructor(snakeWidth, snakeHeight, snakeSpeed, snakeColor, tailColor, childDistance, childSpeed, colliderDistance, setGame, difficulty)
 	{
 		this.width = snakeWidth;
 		this.height = snakeHeight;
@@ -49,11 +49,14 @@ export class SnakeGame
 		this.dontPlay = false;
 		this.animationId = null;
 		this.childSpeed = childSpeed;
+		this.colliderDistance = colliderDistance;
+		this.setGame = setGame;
+		this.difficulty = difficulty;
 	}
 
 	start()
 	{
-		
+		this.setGame(state => ({...state, gameOver: false, score: 0}))
 		document.body.addEventListener("keydown", e => this.changeDirection(e))
 		ctx.fillStyle = this.snakeColor;
 		requestAnimationFrame(this.game.bind(this));
@@ -166,6 +169,9 @@ export class SnakeGame
 	restart()
 	{
 		document.querySelector(".restart").classList.remove("active");
+		this.score = 0;
+		document.getElementById("score").innerHTML = "Your Score: " + this.score;
+		this.clear();
 	}
 
 	drawSnake()
@@ -216,20 +222,36 @@ export class SnakeGame
 		for (let i = 0; i < this.childs.length; i++) 
 		{
 			ctx.fillStyle = this.tailColor;
-            if(i < 30)
+            if(i <= 15)
             {
-                const rColor = Math.floor(i / this.width * 255);
+                const rColor = Math.floor(i / this.width * 200);
                 const hexColor = rColor.toString(16).length === 1 ? "0" + rColor.toString(16) : rColor.toString(16)
 			    ctx.fillStyle = this.tailColor + hexColor
             }
-			else if(i > this.childs.length - 31)
+			if(i < this.childs.length - this.colliderDistance && i >= 10)
 			{
+				if(this.x + this.width > this.childs[i]?.x && this.x < this.childs[i]?.x + this.width && this.y + this.height > this.childs[i]?.y && this.y < this.childs[i]?.y + this.height)
+				{
+					if(this.gameOver === false)
+					{
+						this.gameOver = true;
+						setTimeout(() => 
+						{
+							document.querySelector(".restart").classList.add("active");
+						}, 700);
+						this.setGame(state => ({...state, gameOver: true, score: this.score, difficulty: this.difficulty}))
+					}
+					// console.log(`child: ${i}\nx: ${this.childs[i].x}\ny: ${this.childs[i].y}\nlength: ${this.childs.length}\nlength: ${this.childs.length}`);
+					// console.log(this.x + this.width, this.childs[i]?.x);
+					// console.log(this.x, this.childs[i]?.x + this.width);
+					// console.log(this.y + this.height, this.childs[i]?.y);
+					// console.log(this.y, this.childs[i]?.y + this.height);
+				}
 			}
 			ctx.fillRect(this.childs[i]?.x, this.childs[i]?.y, this.width, this.height);
 			ctx.fill();
 		}
 		ctx.fillStyle = this.snakeColor;
-		console.log(this.x, this.y);
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 		ctx.fill();
 	}
@@ -279,9 +301,3 @@ export class SnakeGame
 	}
 }
 
-
-// this.gameOver = true;
-// setTimeout(() => 
-// {
-// 	document.querySelector(".restart").classList.add("active");
-// }, 700);

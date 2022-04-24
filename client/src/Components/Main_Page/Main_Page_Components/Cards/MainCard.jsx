@@ -21,13 +21,11 @@ const StyledMainCard = styled.div`
     height: 230px;
   }
 `
-
 const MainCardBody = styled.div`
   padding: 40px;
   width: 100%;
   height: 100%;
 `
-
 const Title = styled.h2` 
   font-size: 30px;
   font-weight: 700;
@@ -65,7 +63,6 @@ const Title = styled.h2`
     font-size: 16px;
   }
 `
-
 const Infos = styled.div`
   margin-top: 30px;
   margin-bottom: 24px;
@@ -88,7 +85,6 @@ const Infos = styled.div`
     margin-bottom: 14px;
   }
 `
-
 const Info = styled.div` 
   margin-right: 24px;
   display: flex;
@@ -101,7 +97,6 @@ const Info = styled.div`
     margin-right: 16px;
   }
 `
-
 const InfoTitle = styled.i` 
   font-size: 17px;
   font-style: normal;
@@ -126,8 +121,6 @@ const InfoTitle = styled.i`
     font-size: 10px;
   }
 `
-
-
 const InfoText = styled.p` 
   font-size: 17px;
   font-weight: 400;
@@ -146,8 +139,6 @@ const InfoText = styled.p`
     margin-left: 6px;
   }
 `
-
-
 const MyButton = styled(Button)` 
   font-size: 17px;
   font-weight: 500;
@@ -182,8 +173,8 @@ export default function MainCard()
     <StyledMainCard>
       <MainCardBody>
         <Title>
-          Must expected secret NFT
-          assortment is live...
+          Our most popular test-skill 
+          application is snake
         </Title>
         <Infos> 
           <Info>
@@ -199,7 +190,7 @@ export default function MainCard()
             <InfoText>Artist</InfoText>
           </Info>
         </Infos>
-        <MyButton onClick={() => navigate("/games/snake-game")}>Explore Now</MyButton>
+        <MyButton onClick={() => navigate("/games/snake-game")}>Play Now</MyButton>
       </MainCardBody>
     </StyledMainCard>
   )

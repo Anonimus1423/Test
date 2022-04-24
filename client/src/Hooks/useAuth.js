@@ -1,4 +1,5 @@
 import axios from "axios";
+import { changeSnakeScoresAction } from "../Store/Reducers/gameReducer";
 import { addNotificationAction } from "../Store/Reducers/notificationReducer";
 import { addUserAction, logoutAction } from "../Store/Reducers/userReducer";
 
@@ -11,6 +12,7 @@ export const getUser = token =>
             const user = await axios.get('/api/account/get-user', { headers: { Authorization: "Bearer " + token } })
             dispatch(addUserAction(user.data.user))
             dispatch(addNotificationAction(user.data.notifications))
+            dispatch(changeSnakeScoresAction(user.data.scores))
         }
         catch(e)
         {

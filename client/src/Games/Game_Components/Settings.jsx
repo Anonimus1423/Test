@@ -13,7 +13,7 @@ const StyledSettings = styled(RightCard)`
     pointer-events: auto;
     padding: 30px 30px;
     transform: translateX(-50%);
-    ${({ active }) => !active ? "transform: translateY(-50%) translateX(-50%); opacity: 0; pointer-events: none;" : null}
+    ${({ active }) => !active ? "transform: translateY(-100%) translateX(-50%); opacity: 0; pointer-events: none;" : null}
 `
 
 const SubTitle = styled.h3` 

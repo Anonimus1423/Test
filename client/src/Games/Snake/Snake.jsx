@@ -1,11 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { GameEnded } from '../gameHttp/useGameHttp';
 import Button from '../Game_Components/Button';
 import Restart from '../Game_Components/Restart';
 import Scores from '../Game_Components/Scores';
 import Settings from '../Game_Components/Settings';
 import Title from '../Game_Components/Title';
 import { SnakeGame, createCanvas } from './snakeScript.js'
+import { NotificationContext } from "../../Hooks/Alert/NotificationProvider";
 
 
 const StyledSnakeGame = styled.div`
@@ -48,15 +51,40 @@ const gameAllSettings = [
 export default function Snake() {
 
 	const element = useRef();
+	const dispatch = useDispatch();
 	const [snake, setSnake] = useState()
+	const [game, setGame] = useState({
+		gameOver: false,
+		score: 0,
+		type: "snake",
+		difficulty: ""
+	})
 	const [settings, setSettings] = useState(false)
-	const [gameSettings, setGameSettings] = useState({ Difficulty: 1 })
+	const [gameSettings, setGameSettings] = useState({ Difficulty: Number(localStorage.getItem("snake_difficulty")) || 1 })
+    const [message, setMessage] = useState();
+    const [error, setError] = useState();
+	const scores = useSelector(state => state?.game?.snakeGame?.scores.find(score => score.difficulty === game.difficulty)?.hiScore);
+
+    const alerter = useContext(NotificationContext)
+
+    useEffect(() => 
+    {
+        if(error)
+        {
+            alerter("error", error)
+			setError(null)
+        }
+        if(message)
+        {
+            alerter("message", message)
+			setMessage(null)
+        }
+    }, [message, error])
 
 	useEffect(() => 
 	{
 		createCanvas(500, 500, "#303841", element);
 	}, [])
-
 	useEffect(() => 
 	{
 		snake?.start();
@@ -64,20 +92,40 @@ export default function Snake() {
 
 	useEffect(() => 
 	{
+		if(game.gameOver === true && (!scores || Number(game.score) > Number(scores)))
+		{
+			dispatch(GameEnded({ ...game }, setMessage, setError))
+			setGame(state => ({ ...state, gameOver: false }))
+		}
+	}, [game])
+
+	const setSnakeFunction = () => 
+	{
 		snake?.endGame();
+		localStorage.setItem("snake_difficulty", gameSettings.Difficulty)
 		if(gameSettings.Difficulty === 1){
-			setSnake(new SnakeGame(20, 20, 150, "#ffb114", "#F6C90E", 10, 2));
+			setSnake(new SnakeGame(20, 20, 150, "#ffb114", "#F6C90E", 10, 1, 20, setGame, "Easy"));
 		}
 		else if(gameSettings.Difficulty === 2)
 		{
-			setSnake(new SnakeGame(20, 20, 300, "#ffb114", "#F6C90E", 5, 1));
+			setSnake(new SnakeGame(20, 20, 300, "#ffb114", "#F6C90E", 5, 0.5, 15, setGame, "Medium"));
 		}
 		else
 		{
-			setSnake(new SnakeGame(20, 20, 500, "#ffb114", "#F6C90E", 2.5, 0.5));
+			setSnake(new SnakeGame(20, 20, 500, "#ffb114", "#F6C90E", 2.5, 0.25, 25, setGame, "Hard"));
 		}
+	}
+
+	useEffect(() => 
+	{
+		setSnakeFunction()
 	}, [gameSettings])
 
+	const RestartGame = () => 
+	{
+		snake.restart(); 
+		setSnakeFunction()
+	}
   	return (
 		<SnakeContainer>
 			<Title>Snake Game</Title>
@@ -87,7 +135,7 @@ export default function Snake() {
 					<Button onClick={() => setSettings(state => !state)}>Settings</Button>
 				</StyledSnakeGame>
 				<Canvas ref={element}>
-					<Restart onClick={() => { snake.restart(); setSnake(new SnakeGame(20, 20, 200, "#F6C90E")) }}>Restart</Restart>
+					<Restart difficulty={game.difficulty} onClick={RestartGame}>Restart</Restart>
 				</Canvas>
 			</MainGame>
 			<Settings gameSettings={gameSettings} setGameSettings={setGameSettings} setSettings={setSettings} gameAllSettings={gameAllSettings} active={settings} />

@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import authRouter from "./routes/auth-route.js"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import gameRouter from "./routes/game-route.js"
 
 const app = express()
 dotenv.config()
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use("/api/account", authRouter)
+app.use("/api/game", gameRouter)
 
 const start = async () => 
 {

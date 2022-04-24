@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import Button, { MyButton } from './Button'
+import { MyButton } from './Button'
+import { useSelector } from 'react-redux'
 
 const StyledRestart = styled.div`
     width: 100%;
@@ -20,20 +21,40 @@ const StyledRestart = styled.div`
         transform: translate(-50%, -50%);
     }
 `
+const RestartBody = styled.div`
+    background-color: ${({ theme }) => theme.colors.defaultColor};
+    padding: 15px 30px;
+    border-radius: 10px;
+    border: 2px solid ${({ theme }) => theme.colors.secondColor};
+`
 const RestartButton = styled(MyButton)` 
     font-size: 17px;
     padding: 10px 25px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
     &:hover:before
     {
         width: 120px;
         height: 120px;
     }
 `
-
-export default function Restart({ children, onClick }) {
-  return (
-    <StyledRestart className='restart'>
-        <RestartButton onClick={onClick}>{children}</RestartButton>
-    </StyledRestart>
-  )
+const Record = styled.h4` 
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 15px;
+`
+export default function Restart({ children, onClick, difficulty }) 
+{
+    const score = useSelector(state => state?.game?.snakeGame?.scores.find(score => score.difficulty === difficulty)?.hiScore)
+    return (
+        <StyledRestart className='restart'>
+            <RestartBody>
+                <Record>Best score: {score}</Record>
+                <RestartButton onClick={onClick}>{children}</RestartButton>
+            </RestartBody>
+        </StyledRestart>
+    )
 }

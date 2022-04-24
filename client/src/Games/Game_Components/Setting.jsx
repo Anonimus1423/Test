@@ -51,7 +51,6 @@ export default function Setting({ setting, setGameSettings, gameSettings }) {
     setGameSettings(state => ({...state, [type]: value}))
   }
 
-  console.log(setting.label, Settings.value1, gameSettings[Settings.label]);
   return (
     <StyledSetting>
         <Label>{setting.label}</Label>
